@@ -16,6 +16,8 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Renderer extends AbstractRenderer {
 
+    private int angle = 1;
+
     public Renderer() {
         super();
 
@@ -58,15 +60,44 @@ public class Renderer extends AbstractRenderer {
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
+        glFrontFace(GL_CW);
+
+        glPolygonMode(GL_FRONT, GL_FILL);
+        glPolygonMode(GL_BACK, GL_LINE);
+
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+        glTranslatef(0.4f, 0,0);
+
+        glPushMatrix();
+
+        angle++;
+        glRotatef(angle, 0,0,1);
+
         // Rendering triangle by fixed pipeline
         glBegin(GL_TRIANGLES);
-        glColor3f(1f, 0f, 0f);
-        glVertex2f(-1f, -1);
-        glColor3f(0f, 1f, 0f);
-        glVertex2f(1, 0);
-        glColor3f(0f, 0f, 1f);
-        glVertex2f(0, 1);
+        glColor3f(0f, 0.2f, 1f);
+        glVertex2f(-0.5f, -0.5f);
+        glVertex2f(-0.5f, 0.5f);
+        glVertex2f(0.5f, -0.5f);
         glEnd();
+
+
+        glPopMatrix();
+        glLoadIdentity();
+        glTranslatef(0.4f, 0,0);
+        glRotatef(-angle, 0,0,1);
+        glPushMatrix();
+
+
+
+        glBegin(GL_TRIANGLES);
+        glColor3f(0f, 0.2f, 1f);
+        glVertex2f(-0.5f, 0.5f);
+        glVertex2f(0.5f, -0.5f);
+        glVertex2f(0.5f, 0.5f);
+        glEnd();
+        glPopMatrix();
     }
 
 }
