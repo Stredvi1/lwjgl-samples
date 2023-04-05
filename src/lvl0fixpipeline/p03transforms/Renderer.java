@@ -1,6 +1,7 @@
 package lvl0fixpipeline.p03transforms;
 
 import lvl0fixpipeline.global.AbstractRenderer;
+import lwjglutils.OGLTexture2D;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
@@ -8,12 +9,10 @@ import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWScrollCallback;
 
 import java.nio.DoubleBuffer;
-import java.util.Locale;
 
 import static lvl0fixpipeline.global.GluUtils.gluLookAt;
 import static lvl0fixpipeline.global.GluUtils.gluPerspective;
 import static lvl0fixpipeline.global.GlutUtils.glutSolidCube;
-import static lvl0fixpipeline.global.GlutUtils.glutSolidSphere;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 
@@ -37,6 +36,8 @@ public class Renderer extends AbstractRenderer {
 
     private boolean per = false, depth = true;
     private boolean mouseButton1 = false;
+
+    private OGLTexture2D texture1, texture2;
 
     public Renderer() {
         super();
@@ -125,6 +126,31 @@ public class Renderer extends AbstractRenderer {
 
         glLoadIdentity();
         glGetFloatv(GL_MODELVIEW_MATRIX, modelMatrix);
+
+        try {
+            texture1 = new OGLTexture2D("textures/bricks.jpg");
+            texture2 = new OGLTexture2D("textures/globe.jpg");
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        OGLTexture2D.Viewer textureViewer;
+        textureViewer = new OGLTexture2D.Viewer();
+        glDisable(GL_TEXTURE_2D);
+
+
+        // light source setting - diffuse component
+        float[] light_dif = new float[]{1, 1, 1, 1};
+        // light source setting - ambient component
+        float[] light_amb = new float[]{1, 1, 1, 1};
+        // light source setting - specular component
+        float[] light_spec = new float[]{1, 1, 1, 1};
+
+        glLightfv(GL_LIGHT0, GL_AMBIENT, light_amb);
+        glLightfv(GL_LIGHT0, GL_DIFFUSE, light_dif);
+        glLightfv(GL_LIGHT0, GL_SPECULAR, light_spec);
     }
 
     @Override
@@ -143,6 +169,17 @@ public class Renderer extends AbstractRenderer {
 
         mode = mode % 7;
         // rotace mazanim matice a zvetsovanim uhlu
+
+
+        float[] light_position;
+
+        // bod v prostoru
+        light_position = new float[]{25f, 20f, 1f, 1f};
+
+        glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+        glEnable(GL_LIGHTING);
+        glEnable(GL_LIGHT0);
+
 
 
         float x, y, z;
@@ -164,21 +201,36 @@ public class Renderer extends AbstractRenderer {
         glLoadIdentity();
         glPushMatrix();
 
-
+        texture1.bind();
+        glColor3f(0.3f, 0.3f, 0.3f);
         glutSolidCube(5);
-        //glLoadIdentity();
+
+        texture2.bind();
+        glColor3f(0.6f, 0.2f, 0.8f);
+
+        glTranslatef(20, 0, 0);
+        glutSolidCube(4);
 
 
-        glTranslatef(10, 0, 0);
-        glColor3f(0.3f, 0.2f, 0.8f);
-        glRotatef(uhel, 0, 1, 0);
-        glutSolidSphere(2, 20, 20);
-
-        glLoadIdentity();
-        glTranslatef(0, 10, 0);
-        glRotatef(uhel, 0, 0, 1);
-        glColor3f(0.8f, 0.2f, 0.3f);
-        glutSolidSphere(2, 20, 20);
+//
+//
+//        texture2D.bind();
+//
+//        glutSolidCube(5);
+//        //glLoadIdentity();
+//
+//        glRotatef(uhel, 0, 1, 0);
+//        glTranslatef(10, 0, 0);
+//        glColor3f(0.3f, 0.2f, 0.8f);
+//
+//        glutSolidSphere(2, 20, 20);
+//
+//        glLoadIdentity();
+//        glRotatef(uhel, 0, 0, 1);
+//        glTranslatef(0, 10, 0);
+//
+//        glColor3f(0.8f, 0.2f, 0.3f);
+//        glutSolidSphere(2, 20, 20);
 
         glPopMatrix();
 

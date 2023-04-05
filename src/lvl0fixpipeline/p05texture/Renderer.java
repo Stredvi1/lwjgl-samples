@@ -146,6 +146,7 @@ public class Renderer extends AbstractRenderer {
     private void drawSimpleScene() {
         texture1.bind();
 
+
         glMatrixMode(GL_TEXTURE);
         glPushMatrix();
         glLoadIdentity();
